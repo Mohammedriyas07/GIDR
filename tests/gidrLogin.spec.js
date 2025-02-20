@@ -1,16 +1,17 @@
 import { test, expect, chromium } from "@playwright/test";
 
 test("open GIDR page", async () => {
-  const gidr_name = "My first Auto 1";
+  const gidr_name = "My first Auto 10";
   const browser = await chromium.launch();
   const page = await browser.newPage();
+  let input = "Employee ID";
   await page.waitForTimeout(5000);
   await page.goto("https://gidr-sprint26-asia-northeast1.web.app/en");
   await page.click('[name="email"]');
   await page.keyboard.type("vijay.anand.allabothulla+10862@gidr.ai");
   await page.click('[name="password"]');
   await page.keyboard.type("Riyas@6262");
-  await page.locator("//form/div/button").click();
+  await page.click("//form/div/button");
   await page
     .locator("//div[text()='Signed in successfully']")
     .waitFor({ state: "visible" });
@@ -33,5 +34,24 @@ test("open GIDR page", async () => {
   await page
     .locator("//div[text()='File uploaded']")
     .waitFor({ state: "visible" });
-  await page.locator(`//p[text()='${gidr_name}']`).click();
+  //await page.locator(`//p[text()='${gidr_name}']`).click();
+
+  await page
+    .locator("//p[text()='Q&A Document']//parent::div/parent::div//input")
+    .waitFor({ state: "visible" });
+  await page.evaluate(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+  await page
+    .locator("//p[text()='Q&A Document']//parent::div/parent::div//input")
+    .click();
+  await page.keyboard.type(input);
+  await page
+    .locator("//p[text()='Q&A Document']//parent::div/parent::div//button")
+    .waitFor({ state: "visible" });
+  const formLocator = await page.locator(
+    "//p[text()='Q&A Document']//parent::div/parent::div//button"
+  );
+  await formLocator.click();
+  await page.locator(`//p[text()='${input}']`).waitFor({ state: "visible" });
 });
